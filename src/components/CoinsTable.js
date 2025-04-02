@@ -35,16 +35,17 @@ export default function CoinsTable() {
 
   const useStyles = makeStyles({
     row: {
-      backgroundColor: "#16171a",
+      backgroundColor: "#1a237e", // Deep Blue
       cursor: "pointer",
       "&:hover": {
-        backgroundColor: "#131111",
+        backgroundColor: "#0d47a1", // Darker Blue on hover
       },
       fontFamily: "Montserrat",
     },
     pagination: {
       "& .MuiPaginationItem-root": {
-        color: "gold",
+        background: "linear-gradient(135deg, #42a5f5, #1e88e5)", // Blue gradient
+        color: "#fff",
       },
     },
   });
@@ -64,22 +65,19 @@ export default function CoinsTable() {
   const fetchCoins = async () => {
     setLoading(true);
     const { data } = await axios.get(CoinList(currency));
-    console.log(data);
-
     setCoins(data);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchCoins();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency]);
 
   const handleSearch = () => {
     return coins.filter(
       (coin) =>
-        coin.name.toLowerCase().includes(search) ||
-        coin.symbol.toLowerCase().includes(search)
+        coin.name.toLowerCase().includes(search.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(search.toLowerCase())
     );
   };
 
@@ -88,27 +86,27 @@ export default function CoinsTable() {
       <Container style={{ textAlign: "center" }}>
         <Typography
           variant="h4"
-          style={{ margin: 18, fontFamily: "Montserrat" }}
+          style={{ margin: 18, fontFamily: "Montserrat", color: "#42a5f5" }} // Lighter blue text
         >
           Cryptocurrency Prices by Market Cap
         </Typography>
         <TextField
           label="Search For a Crypto Currency.."
           variant="outlined"
-          style={{ marginBottom: 20, width: "100%" }}
+          style={{ marginBottom: 20, width: "100%", backgroundColor: "#fff" }}
           onChange={(e) => setSearch(e.target.value)}
         />
         <TableContainer component={Paper}>
           {loading ? (
-            <LinearProgress style={{ backgroundColor: "gold" }} />
+            <LinearProgress style={{ backgroundColor: "#42a5f5" }} />
           ) : (
             <Table aria-label="simple table">
-              <TableHead style={{ backgroundColor: "#EEBC1D" }}>
+              <TableHead style={{ backgroundColor: "#64b5f6" }}> {/* Light Blue */}
                 <TableRow>
                   {["Coin", "Price", "24h Change", "Market Cap"].map((head) => (
                     <TableCell
                       style={{
-                        color: "black",
+                        color: "#0d47a1", // Dark blue text
                         fontWeight: "700",
                         fontFamily: "Montserrat",
                       }}
@@ -153,30 +151,31 @@ export default function CoinsTable() {
                               style={{
                                 textTransform: "uppercase",
                                 fontSize: 22,
+                                color: "#fff", // White text
                               }}
                             >
                               {row.symbol}
                             </span>
-                            <span style={{ color: "darkgrey" }}>
+                            <span style={{ color: "#cfd8dc" }}> {/* Light Grey */}
                               {row.name}
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" style={{ color: "#fff" }}>
                           {symbol}{" "}
                           {numberWithCommas(row.current_price.toFixed(2))}
                         </TableCell>
                         <TableCell
                           align="right"
                           style={{
-                            color: profit > 0 ? "rgb(14, 203, 129)" : "red",
+                            color: profit ? "#00e5ff" : "red", // Cyan for positive, Red for negative
                             fontWeight: 500,
                           }}
                         >
                           {profit && "+"}
                           {row.price_change_percentage_24h.toFixed(2)}%
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" style={{ color: "#fff" }}>
                           {symbol}{" "}
                           {numberWithCommas(
                             row.market_cap.toString().slice(0, -6)
@@ -191,7 +190,6 @@ export default function CoinsTable() {
           )}
         </TableContainer>
 
-        {/* Comes from @material-ui/lab */}
         <Pagination
           count={(handleSearch()?.length / 10).toFixed(0)}
           style={{
@@ -210,3 +208,4 @@ export default function CoinsTable() {
     </ThemeProvider>
   );
 }
+
